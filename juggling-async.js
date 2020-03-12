@@ -13,7 +13,7 @@ for(var i = 0;i < urls.length;i++){
           request.on("end", function() {
             answers[i] = result;
             var n = 0;
-            for (var j = 0; j < answers.length; j++) {
+            for (var j = 14; j < answers.length; j++) {
               if (answers[j] != null) n++;
             }
             if (n == answers.length) {
