@@ -1,27 +1,32 @@
-var http = require('http');
-var answers = [null,null,null];
-var urls = process.argv.slice(2);
-
-for(var i = 0;i < urls.length;i++){
-    (function(i) {
-        http.get(urls[i], function(request) {
-          var result = "";
-          request.setEncoding("utf8");
-          request.on("data", function(data) {
-            result += data;
-          });
-          request.on("end", function() {
-            answers[i] = result;
-            var n = 0;
-            for (var j = 0; j < answers.length; j++) {
-              if (answers[j] != null) n++;
-            }
-            if (n == answers.length) {
-              for (var k = 0; k < answers.length; k++) {
-                console.log(answers[k]);
-              }
-            }
-          });
-        });
-      })(i);
-}
+'use strict'
+    const http = require('http')
+    const bl = require('bl')
+    const results = []
+    let count = 0
+    
+    function printResults () {
+      for (let i = 0; i < 3; i++) {
+        console.log(results[i])
+      }
+    }
+    
+    function httpGet (index) {
+      http.get(process.argv[2 + index], function (response) {
+        response.pipe(bl(function (err, data) {
+          if (err) {
+            return console.error(err)
+          }
+    
+          results[index] = data.toString()
+          count++
+    
+          if (count === 3) {
+            printResults()
+          }
+        }))
+      })
+    }
+    
+    for (let i = 0; i < 3; i++) {
+      httpGet(i)
+    }
